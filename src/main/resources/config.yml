@@ -1,0 +1,4 @@
+# message to send when dismount is denied.
+dismount_message: "§cYou can't dismount here!"
+# minimum time between error messages in milliseconds
+error_timeout: 1000

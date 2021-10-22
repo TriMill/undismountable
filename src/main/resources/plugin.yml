@@ -1,0 +1,7 @@
+name: Undismountable
+version: '${project.version}'
+main: io.github.trimill.undismountable.Undismountable
+api-version: 1.17
+depend: [ WorldGuard ]
+authors: [ TriMill ]
+description: Worldguard addon to prevent players from dismounting vehicles
