@@ -3,6 +3,7 @@ package io.github.trimill.undismountable;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag;
@@ -18,14 +19,21 @@ public class DismountListener implements Listener {
     public void onDismount(EntityDismountEvent event) {
         // If the dismounter is a player and the mount is not dead
         if (event.getEntity() instanceof Player && !event.getDismounted().isDead()) {
+            Player player = (Player)(event.getEntity());
+            LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+
+            // Check if this player bypasses regions
+            boolean canBypass = WorldGuard.getInstance().getPlatform().getSessionManager().hasBypass(localPlayer, localPlayer.getWorld());
+            if(canBypass) {
+                return;
+            }
+
             // Get the region that the dismount occurs in
-            RegionQuery query = Undismountable.CONTAINER.createQuery();
+            RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
             Location loc = BukkitAdapter.adapt(event.getEntity().getLocation());
             ApplicableRegionSet regionSet = query.getApplicableRegions(loc);
 
             // Get the state of the vehicle-dismount flag for this player
-            Player player = (Player)(event.getEntity());
-            LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
             StateFlag.State state = regionSet.queryState(localPlayer, Undismountable.FLAG_VEHICLE_DISMOUNT);
 
             // If the flag is DENY, prevent the player from dismounting

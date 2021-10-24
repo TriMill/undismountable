@@ -5,7 +5,6 @@ import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,7 +13,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 public final class Undismountable extends JavaPlugin {
-    public static RegionContainer CONTAINER;
     // WorldGuard flag to set whether players can dismount in a region
     public static StateFlag FLAG_VEHICLE_DISMOUNT = null;
     // The error message to send when dismounting is denied, send nothing if null or empty string
@@ -28,7 +26,6 @@ public final class Undismountable extends JavaPlugin {
     public void onEnable() {
         // Initialize constants and register the dismount event listener
         LastErrorMessage = new HashMap<>();
-        CONTAINER = WorldGuard.getInstance().getPlatform().getRegionContainer();
         getServer().getPluginManager().registerEvents(new DismountListener(), this);
 
         // Load from the config file
